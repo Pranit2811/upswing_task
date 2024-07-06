@@ -32,3 +32,22 @@ Directory Structure:
 └── /scripts
     ├── producer.py
     └── consumer.py
+
+Running the Application Without Docker
+
+1. Navigate to the Project Directory
+    cd upswing_task
+
+
+2. Run the Producer Script
+    Navigate to the src/script folder.
+    Execute the producer.py script to send messages to the queue.
+
+3. Run the Consumer Script
+    In the same src/script folder, execute the consumer.py script to consume messages from the queue.
+
+4. Start the FastAPI Server
+    Use the following command to run the FastAPI server:
+    uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+
+By following these steps, you will be able to run the producer and consumer scripts as well as the FastAPI server without using Docker.
