@@ -15,4 +15,8 @@ COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 RUN mkdir -p /var/log/supervisor
 
+ENV ENV=development
+ENV PYTHONUNBUFFERED=True
+ENV PYTHONDONTWRITEBYTECODE=1
+
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]

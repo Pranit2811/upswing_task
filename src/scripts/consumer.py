@@ -1,39 +1,36 @@
-import pika
 import sys
+import os
 from pymongo import MongoClient
 import json
-from datetime import datetime
+import paho.mqtt.client as mqtt
+import traceback
 
-client = MongoClient('mongodb+srv://pranitraut8625:VMraAerXKOwFa179@cluster0.386qnbl.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
-db = client['upswing_report']
-collection = db['upswing']
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from config import get_config
 
+CONFIG = get_config(os.getenv("ENV", "development"))
 
-def consume_message():
-    connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost', virtual_host='/'))
-    channel = connection.channel()
+client = MongoClient(CONFIG['MONGO_CLIENT'])
+db = client[CONFIG['MONGO_DB']]
+collection = db[CONFIG['MONGO_COLLECTION']]
 
-    channel.queue_declare(queue='MQTT_MESSAGE', durable=True)
+client = mqtt.Client()
+client.connect(CONFIG['MQTT_HOST'], CONFIG['MQTT_PORT'])
 
-    def callback(ch, method, properties, body):
-        insert_status(json.loads(body))
-
-    channel.basic_consume(queue='MQTT_MESSAGE', on_message_callback=callback, auto_ack=True)
-
-    try:
-        channel.start_consuming()
-    except KeyboardInterrupt:
-        print(" [!] Exiting...")
-        connection.close()
-        sys.exit(0)
-
-def insert_status(body):
-    body["timestamp"] = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
-    result = collection.insert_one(body)
+def insert_status(payload):
+    result = collection.insert_one(payload)
     print(f"Inserted message with ID: {result.inserted_id}")
 
-if __name__ == '__main__':
-    consume_message()
+def subscribe_topic(client: mqtt, topic):
+    try:
+        def on_message(client, userdata, msg):
+            decoded_msg = json.loads(msg.payload.decode())
+            print(f"Received {decoded_msg} from {msg.topic} topic","\n")
+            insert_status(decoded_msg)
+        client.subscribe(topic)
+        client.on_message = on_message
+    except Exception as e:
+        traceback.print_exc()
 
-
-# VMraAerXKOwFa179
+subscribe_topic(client, CONFIG['MQTT_TOPIC'])
+client.loop_forever()

@@ -20,15 +20,19 @@ Follow these instructions to build and run the Docker container:
 
 4. use below curl request for get count of each status during the specified time range.
     
-    curl --location 'http://127.0.0.1:8000/status?start_date=2024-07-06%2003%3A23%3A00&end_date=2024-07-07%2003%3A26%3A00'
+    curl --location 'http://127.0.0.1:8000/status?start_date=2024-11-28&end_date=2024-11-28'
 
     Note. Change the Query params as per your requirement.
-
+    
+5. for checking docker logs sudo docker logs -f test-app
 
 Directory Structure:
     /src
 ├── main.py
 ├── requirements.txt
+└── /config
+    ├── development.json
+    └── production.json
 └── /scripts
     ├── producer.py
     └── consumer.py

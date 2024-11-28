@@ -1,0 +1,10 @@
+{
+    "MQTT_HOST" : "localhost",
+    "MQTT_PORT" : 1883,
+    "MQTT_TOPIC" : "test_topic",
+    "MQTT_USERNAME" : "mqtt_guest",
+    "MQTT_PASSWORD" : "mqtt_guest",
+    "MONGO_DB" : "upswing_report",
+    "MONGO_COLLECTION" : "upswing",
+    "MONGO_CLIENT" : "mongodb+srv://pranitraut8625:VMraAerXKOwFa179@cluster0.386qnbl.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+}
